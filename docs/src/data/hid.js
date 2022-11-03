@@ -1356,7 +1356,7 @@ export default [
     footnotes: {},
   },
   {
-    names: ["NON_US_HASH", "NUHS"],
+    names: ["NON_US_HASH"],
     description: "Non-US # [Hash/Pound] and ~ [Tilde]",
     context: "Keyboard",
     clarify: false,
@@ -2606,7 +2606,7 @@ export default [
     footnotes: {},
   },
   {
-    names: ["NON_US_BACKSLASH", "NON_US_BSLH", "NUBS"],
+    names: ["NON_US_BACKSLASH", "NON_US_BSLH"],
     description: "Non-US \\ [Backslash] and | [Pipe]",
     context: "Keyboard",
     clarify: false,
@@ -2732,7 +2732,7 @@ export default [
     ],
     documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=86",
     os: {
-      windows: true,
+      windows: null,
       linux: true,
       android: false,
       macos: true,
@@ -2753,7 +2753,7 @@ export default [
     ],
     documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=86",
     os: {
-      windows: true,
+      windows: null,
       linux: true,
       android: false,
       macos: true,
@@ -2774,7 +2774,7 @@ export default [
     ],
     documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=86",
     os: {
-      windows: true,
+      windows: null,
       linux: true,
       android: false,
       macos: true,
@@ -2795,7 +2795,7 @@ export default [
     ],
     documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=86",
     os: {
-      windows: true,
+      windows: null,
       linux: true,
       android: false,
       macos: true,
@@ -2816,7 +2816,7 @@ export default [
     ],
     documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=86",
     os: {
-      windows: true,
+      windows: null,
       linux: true,
       android: false,
       macos: true,
@@ -2837,7 +2837,7 @@ export default [
     ],
     documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=86",
     os: {
-      windows: true,
+      windows: null,
       linux: true,
       android: false,
       macos: true,
@@ -2858,7 +2858,7 @@ export default [
     ],
     documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=86",
     os: {
-      windows: true,
+      windows: null,
       linux: true,
       android: false,
       macos: true,
@@ -2879,7 +2879,7 @@ export default [
     ],
     documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=86",
     os: {
-      windows: true,
+      windows: null,
       linux: true,
       android: false,
       macos: true,
@@ -2900,7 +2900,7 @@ export default [
     ],
     documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=86",
     os: {
-      windows: true,
+      windows: null,
       linux: true,
       android: false,
       macos: true,
@@ -2921,7 +2921,7 @@ export default [
     ],
     documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=86",
     os: {
-      windows: true,
+      windows: null,
       linux: true,
       android: false,
       macos: true,
@@ -2942,7 +2942,7 @@ export default [
     ],
     documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=86",
     os: {
-      windows: true,
+      windows: null,
       linux: true,
       android: false,
       macos: true,
@@ -2963,7 +2963,7 @@ export default [
     ],
     documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=86",
     os: {
-      windows: true,
+      windows: null,
       linux: true,
       android: false,
       macos: true,
@@ -7251,7 +7251,7 @@ export default [
       windows: null,
       linux: true,
       android: true,
-      macos: true,
+      macos: null,
       ios: null,
     },
     footnotes: {},
@@ -7713,28 +7713,7 @@ export default [
       windows: null,
       linux: true,
       android: null,
-      macos: true,
-      ios: null,
-    },
-    footnotes: {},
-  },
-  {
-    names: ["C_AC_DESKTOP_SHOW_ALL_APPLICATIONS"],
-    description: "Desktop Show All Applications",
-    context: "Consumer AC",
-    clarify: true,
-    usages: [
-      {
-        application: consumerApplication,
-        item: usage(consumerPage, 0x2a2),
-      },
-    ],
-    documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=153",
-    os: {
-      windows: null,
-      linux: true,
-      android: null,
-      macos: true,
+      macos: null,
       ios: null,
     },
     footnotes: {},
