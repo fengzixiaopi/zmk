@@ -14,12 +14,6 @@ The Mod-Morph behavior sends a different keypress, depending on whether a specif
 
 The Mod-Morph behavior acts as one of two keycodes, depending on if the required modifier is being held during the keypress.
 
-When the modifier is being held it is sent along with the morphed keycode. This can cause problems when the morphed keycode and modifier have an existing relationship (such as `shift-delete` or `ctrl-v` on many operating systems).
-
-As a remedy, you can add the optional attribute `masked_mods`, containing
-the bitwise OR of the modifiers that should be disabled while the key is held,
-so that they are not included in the report sent to the host.
-
 ### Configuration
 
 An example of how to implement the mod-morph "Grave Escape":
@@ -33,7 +27,6 @@ An example of how to implement the mod-morph "Grave Escape":
             #binding-cells = <0>;
             bindings = <&kp ESC>, <&kp GRAVE>;
             mods = <(MOD_LGUI|MOD_LSFT|MOD_RGUI|MOD_RSFT)>;
-            masked_mods = <(MOD_LGUI|MOD_LSFT)>; // don't send left modifiers
         };
     };
 };
