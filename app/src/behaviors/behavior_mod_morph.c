@@ -66,10 +66,8 @@ static int on_mod_morph_binding_released(struct zmk_behavior_binding *binding,
 
     struct zmk_behavior_binding *pressed_binding = data->pressed_binding;
     data->pressed_binding = NULL;
-    int err;
-    err = behavior_keymap_binding_released(pressed_binding, event);
     zmk_hid_masked_modifiers_clear();
-    return err;
+    return behavior_keymap_binding_released(pressed_binding, event);
 }
 
 static const struct behavior_driver_api behavior_mod_morph_driver_api = {
@@ -93,8 +91,8 @@ static int behavior_mod_morph_init(const struct device *dev) { return 0; }
         .normal_binding = _TRANSFORM_ENTRY(0, n),                                                  \
         .morph_binding = _TRANSFORM_ENTRY(1, n),                                                   \
         .mods = DT_INST_PROP(n, mods),                                                             \
-        .masked_mods = COND_CODE_0(DT_INST_NODE_HAS_PROP(n, keep_mods), (DT_INST_PROP(n, mods)),   \
-                                   (DT_INST_PROP(n, mods) & ~DT_INST_PROP(n, keep_mods))),         \
+        .masked_mods = COND_CODE_0(DT_INST_NODE_HAS_PROP(n, masked_mods), (0),                     \
+                                   (DT_INST_PROP(n, masked_mods))),                                \
     };                                                                                             \
     static struct behavior_mod_morph_data behavior_mod_morph_data_##n = {};                        \
     DEVICE_DT_INST_DEFINE(n, behavior_mod_morph_init, NULL, &behavior_mod_morph_data_##n,          \
