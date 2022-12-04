@@ -4,7 +4,7 @@
 #include <zmk/hid.h>
 #include <zmk/endpoints.h>
 #include <zmk/keymap.h>
-#include <dt-bindings/zmk/mouse.h>
+#include <zmk/mouse.h>
 
 #define SCROLL_DIV_FACTOR 5
 
