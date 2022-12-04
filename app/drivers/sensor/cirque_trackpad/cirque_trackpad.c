@@ -24,20 +24,20 @@ static int pinnacle_seq_read(const struct device *dev, const uint8_t addr, uint8
         .buffers = &tx_buf,
         .count = 1,
     };
-	struct spi_buf rx_buf[2] = {
-		{
-			.buf = rx_dummy,
-			.len = 3,
-		},
-		{
-			.buf = buf,
-			.len = len,
-		},
-	};
-	const struct spi_buf_set rx = {
-		.buffers = rx_buf,
-		.count = 2,
-	};
+    struct spi_buf rx_buf[2] = {
+        {
+            .buf = rx_dummy,
+            .len = 3,
+        },
+        {
+            .buf = buf,
+            .len = len,
+        },
+    };
+    const struct spi_buf_set rx = {
+        .buffers = rx_buf,
+        .count = 2,
+    };
     return spi_transceive_dt(&config->bus, &tx, &rx);
 #elif DT_INST_ON_BUS(0, i2c)
     return i2c_burst_read_dt(&config->bus, PINNACLE_READ | addr, buf, len);
@@ -48,6 +48,7 @@ static int pinnacle_write(const struct device *dev, const uint8_t addr, const ui
     const struct pinnacle_config *config = dev->config;
 #if DT_INST_ON_BUS(0, spi)
     uint8_t tx_buffer[2] = { PINNACLE_WRITE | addr, val };
+    uint8_t rx_buffer[2];
 
     const struct spi_buf tx_buf = {
         .buf = tx_buffer,
@@ -57,16 +58,16 @@ static int pinnacle_write(const struct device *dev, const uint8_t addr, const ui
         .buffers = &tx_buf,
         .count = 1,
     };
-	const struct spi_buf rx_buf[1] = {
-		{
-			.buf = rx_buffer,
-			.len = sizeof(rx_buffer),
-		},
-	};
-	const struct spi_buf_set rx = {
-		.buffers = rx_buf,
-		.count = 1,
-	};
+    const struct spi_buf rx_buf[1] = {
+        {
+            .buf = rx_buffer,
+            .len = sizeof(rx_buffer),
+        },
+    };
+    const struct spi_buf_set rx = {
+        .buffers = rx_buf,
+        .count = 1,
+    };
     const int ret = spi_transceive_dt(&config->bus, &tx, &rx);
     if (rx_buffer[1] != 0xFB) {
         LOG_ERR("bad ret val");
@@ -101,8 +102,8 @@ static int pinnacle_sample_fetch(const struct device *dev, enum sensor_channel c
     }
     struct pinnacle_data *data = dev->data;
     data->btn = packet[0] & PINNACLE_PACKET0_BTN_PRIM;
-    data->dx = ((packet[0] & PINNACLE_PACKET0_X_SIGN) ? 0xFF00 : 0) | packet[1];
-    data->dy = ((packet[0] & PINNACLE_PACKET0_Y_SIGN) ? 0xFF00 : 0) | packet[2];
+    data->dx = (int16_t) (int8_t) packet[1];
+    data->dy = (int16_t) (int8_t) packet[2];
     return 0;
 }
 
@@ -114,7 +115,7 @@ static void set_int(const struct device *dev, const bool en) {
         LOG_ERR("can't set interrupt");
     }
 }
-
+    
 static int pinnacle_trigger_set(const struct device *dev, const struct sensor_trigger *trig, sensor_trigger_handler_t handler) {
     struct pinnacle_data *data = dev->data;
 
@@ -131,11 +132,6 @@ static int pinnacle_trigger_set(const struct device *dev, const struct sensor_tr
 static void pinnacle_int_cb(const struct device *dev) {
     struct pinnacle_data *data = dev->data;
     data->data_ready_handler(dev, data->data_ready_trigger);
-
-    // clear hardware interrupt on trackpad side
-    pinnacle_write(dev, PINNACLE_STATUS1, 0);
-
-    // enable the inerrupt to the host side
     set_int(dev, true);
 }
 
@@ -147,6 +143,7 @@ static void pinnacle_thread(void *arg) {
     while (1) {
         k_sem_take(&data->gpio_sem, K_FOREVER);
         pinnacle_int_cb(dev);
+        pinnacle_write(dev, PINNACLE_STATUS1, 0);   // Clear SW_DR
     }
 }
 #elif defined(CONFIG_PINNACLE_TRIGGER_GLOBAL_THREAD)
@@ -160,11 +157,6 @@ static void pinnacle_work_cb(struct k_work *work) {
 static void pinnacle_gpio_cb(const struct device *port, struct gpio_callback *cb, uint32_t pins) {
     struct pinnacle_data *data = CONTAINER_OF(cb, struct pinnacle_data, gpio_cb);
     const struct device *dev = data->dev;
-    set_int(dev, false); // disable interrupt on mcu side
-
-    /* pinnacle_write(dev, PINNACLE_STATUS1, 0);   // clear hardware interrupt on trackpad side */
-
-    // dispatch data handling to work thead
 #if defined(CONFIG_PINNACLE_TRIGGER_OWN_THREAD)
     k_sem_give(&data->gpio_sem);
 #elif defined(CONFIG_PINNACLE_TRIGGER_GLOBAL_THREAD)
@@ -177,23 +169,14 @@ static int pinnacle_init(const struct device *dev) {
     struct pinnacle_data *data = dev->data;
     const struct pinnacle_config *config = dev->config;
 
-    // todo: wait for power-on or not
-    pinnacle_write(dev, PINNACLE_STATUS1, 0);   // Clear CC after power-on
-
-    // disable z-idle packets
+    pinnacle_write(dev, PINNACLE_STATUS1, 0);   // Clear CC
     pinnacle_write(dev, PINNACLE_Z_IDLE, 0);    // No Z-Idle packets
-
-    // set sleep-mode
     if (config->sleep_en) {
         pinnacle_write(dev, PINNACLE_SYS_CFG, PINNACLE_SYS_CFG_EN_SLEEP);
     }
-
-    // set tap
     if (config->no_taps) {
         pinnacle_write(dev, PINNACLE_FEED_CFG2, PINNACLE_FEED_CFG2_DIS_TAP);
     }
-
-    // data mode and enable feed
     uint8_t feed_cfg1 = PINNACLE_FEED_CFG1_EN_FEED;
     if (config->invert_x) {
         feed_cfg1 |= PINNACLE_FEED_CFG1_INV_X;
@@ -232,10 +215,10 @@ static int pinnacle_init(const struct device *dev) {
 
 static const struct sensor_driver_api pinnacle_driver_api = {
 #if CONFIG_PINNACLE_TRIGGER
-	.trigger_set = pinnacle_trigger_set,
+    .trigger_set = pinnacle_trigger_set,
 #endif
-	.sample_fetch = pinnacle_sample_fetch,
-	.channel_get = pinnacle_channel_get,
+    .sample_fetch = pinnacle_sample_fetch,
+    .channel_get = pinnacle_channel_get,
 };
 
 #define CIRQUE_INST(n) \
