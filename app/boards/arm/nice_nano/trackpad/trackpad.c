@@ -115,15 +115,15 @@ static void handle_trackpad(const struct device *dev, const struct sensor_trigge
 }
 
 static int trackpad_init() {
-    struct sensor_trigger trigger = {
-        .type = SENSOR_TRIG_DATA_READY,
-        .chan = SENSOR_CHAN_ALL,
-    };
+    // struct sensor_trigger trigger = {
+    //     .type = SENSOR_TRIG_DATA_READY,
+    //     .chan = SENSOR_CHAN_ALL,
+    // };
     printk("trackpad");
-    if (sensor_trigger_set(trackpad, &trigger, handle_trackpad) < 0) {
-        LOG_ERR("can't set trigger");
-        return -EIO;
-    };
+    // if (sensor_trigger_set(trackpad, &trigger, handle_trackpad) < 0) {
+    //     LOG_ERR("can't set trigger");
+    //     return -EIO;
+    // };
     return 0;
 }
 
