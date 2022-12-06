@@ -120,6 +120,7 @@ static int trackpad_init() {
     //     .chan = SENSOR_CHAN_ALL,
     // };
     printk("trackpad");
+    LOG_WRN("trackpad init invoked");
     // if (sensor_trigger_set(trackpad, &trigger, handle_trackpad) < 0) {
     //     LOG_ERR("can't set trigger");
     //     return -EIO;
