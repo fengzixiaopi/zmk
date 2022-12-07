@@ -69,10 +69,10 @@ static int trackpad_init() {
     };
     // printk("trackpad");
     LOG_ERR("trackpad init");
-    if (sensor_trigger_set(trackpad, &trigger, handle_trackpad) < 0) {
-        LOG_ERR("can't set trigger");
-        return -EIO;
-    };
+    // if (sensor_trigger_set(trackpad, &trigger, handle_trackpad) < 0) {
+    //     LOG_ERR("can't set trigger");
+    //     return -EIO;
+    // };
     return 0;
 }
 
