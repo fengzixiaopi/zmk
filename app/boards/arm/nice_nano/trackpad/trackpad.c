@@ -71,7 +71,7 @@ static void handle_trackpad(const struct device *dev, const struct sensor_trigge
 
 static int trackpad_init() {
     struct sensor_trigger trigger = {
-        .type = SENSOR_TRIG_DATA_READY,
+        .type = SENSOR_TRIG_TIMER,
         .chan = SENSOR_CHAN_ALL,
     };
     // printk("trackpad");
