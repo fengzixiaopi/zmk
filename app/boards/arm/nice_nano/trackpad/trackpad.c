@@ -19,25 +19,31 @@ static void handle_trackpad(const struct device *dev, const struct sensor_trigge
         LOG_ERR("fetch: %d", ret);
         return;
     }
+    LOG_ERR("trackpad sensor sample fetched");
     struct sensor_value dx, dy, btn;
     ret = sensor_channel_get(dev, SENSOR_CHAN_POS_DX, &dx);
     if (ret < 0) {
         LOG_ERR("get dx: %d", ret);
         return;
     }
+    LOG_ERR("trackpad sensor channel get 1");
     ret = sensor_channel_get(dev, SENSOR_CHAN_POS_DY, &dy);
     if (ret < 0) {
         LOG_ERR("get dy: %d", ret);
         return;
     }
+    LOG_ERR("trackpad sensor channel get 2");
     ret = sensor_channel_get(dev, SENSOR_CHAN_PRESS, &btn);
     if (ret < 0) {
         LOG_ERR("get btn: %d", ret);
         return;
     }
-    LOG_DBG("trackpad %d %d %02x", dx.val1, dy.val1, btn.val1);
+    LOG_ERR("trackpad sensor channel get 3");
+    LOG_ERR("trackpad %d %d %02x", dx.val1, dy.val1, btn.val1);
     zmk_hid_mouse_movement_set(0, 0);
+    LOG_ERR("trackpad mouse movement set");
     zmk_hid_mouse_scroll_set(0, 0);
+    LOG_ERR("trackpad mouse scroll set");
     const uint8_t layer = zmk_keymap_highest_layer_active();
     uint8_t button;
     static uint8_t last_button = 0;
@@ -69,13 +75,13 @@ static int trackpad_init() {
     };
     // printk("trackpad");
     LOG_ERR("trackpad init");
-    const struct device *testTrackpad = DEVICE_DT_GET(DT_INST(0, cirque_pinnacle));
+//     const struct device *testTrackpad = DEVICE_DT_GET(DT_INST(0, cirque_pinnacle));
 
-LOG_ERR("trackpad found");
-    // if (sensor_trigger_set(trackpad, &trigger, handle_trackpad) < 0) {
-    //     LOG_ERR("can't set trigger");
-    //     return -EIO;
-    // };
+// LOG_ERR("trackpad found");
+    if (sensor_trigger_set(trackpad, &trigger, handle_trackpad) < 0) {
+        LOG_ERR("can't set trigger");
+        return -EIO;
+    };
     return 0;
 }
 
