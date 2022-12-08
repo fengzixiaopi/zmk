@@ -91,7 +91,8 @@ static int trackpad_init() {
     };
     printk("trackpad");
 
-    while (1)
+    int iterations = 0;
+    while (iterations++ < 20)
     {
       handle_trackpad(trackpad, &trigger);
       k_usleep(1000);
