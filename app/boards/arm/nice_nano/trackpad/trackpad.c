@@ -100,11 +100,28 @@ static int trackpad_init() {
     //   k_usleep(1000);
     // }
 
-    k_usleep(2000);
-    int ret = setSensor(trackpad, &trigger, handle_trackpad);
+
+    const struct sensor_driver_api *api =
+        (const struct sensor_driver_api *)dev->trackpad;
+
+
+    int sensorRet;
+
+    if (api->trigger_set == NULL) {
+        LOG_ERR("api trigger set not set");
+        sensorRet = -ENOSYS;
+    }
+
+    sensorRet = api->trigger_set(dev, trig, handler);
+
+
+
+
+    // k_usleep(2000);
+    // int ret = setSensor(trackpad, &trigger, handle_trackpad);
     // LOG_ERR(ret);
 
-    if (ret < 0) {
+    if (sensorRet < 0) {
         LOG_ERR("can't set trigger");
         return -EIO;
     };
@@ -112,19 +129,19 @@ static int trackpad_init() {
     return 0;
 }
 
-static int setSensor(const struct device *dev,
-                     const struct sensor_trigger *trig,
-                     sensor_trigger_handler_t handler)
-{
-    const struct sensor_driver_api *api =
-        (const struct sensor_driver_api *)dev->api;
+// static inline int setSensor(const struct device *dev,
+//                      const struct sensor_trigger *trig,
+//                      sensor_trigger_handler_t handler)
+// {
+//     const struct sensor_driver_api *api =
+//         (const struct sensor_driver_api *)dev->api;
 
-    if (api->trigger_set == NULL) {
-        LOG_ERR("api trigger set not set");
-        return -ENOSYS;
-    }
+//     if (api->trigger_set == NULL) {
+//         LOG_ERR("api trigger set not set");
+//         return -ENOSYS;
+//     }
 
-    return api->trigger_set(dev, trig, handler);
-}
+//     return api->trigger_set(dev, trig, handler);
+// }
 
 SYS_INIT(trackpad_init, APPLICATION, CONFIG_ZMK_KSCAN_INIT_PRIORITY);
