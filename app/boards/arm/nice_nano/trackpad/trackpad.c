@@ -6,6 +6,8 @@
 #include <zmk/keymap.h>
 #include <dt-bindings/zmk/mouse.h>
 
+
+
 #define SCROLL_DIV_FACTOR 5
 
 LOG_MODULE_REGISTER(trackpad, CONFIG_SENSOR_LOG_LEVEL);
@@ -91,23 +93,37 @@ static int trackpad_init() {
     };
     printk("trackpad");
 
-    int iterations = 0;
-    while (iterations++ < 100)
-    {
-      handle_trackpad(trackpad, &trigger);
-      k_usleep(1000);
+    // int iterations = 0;
+    // while (iterations++ < 100)
+    // {
+    //   handle_trackpad(trackpad, &trigger);
+    //   k_usleep(1000);
+    // }
+
+    k_usleep(2000);
+    int ret = setSensor(trackpad, &trigger, handle_trackpad);
+    // LOG_ERR(ret);
+
+    if (ret < 0) {
+        LOG_ERR("can't set trigger");
+        return -EIO;
+    };
+    LOG_WRN("trackpad initialized");
+    return 0;
+}
+
+static int setSensor(const struct device *dev,
+                     const struct sensor_trigger *trig,
+                     sensor_trigger_handler_t handler)
+{
+    const struct sensor_driver_api *api =
+        (const struct sensor_driver_api *)dev->api;
+
+    if (api->trigger_set == NULL) {
+        return -ENOSYS;
     }
 
-    // k_usleep(2000);
-    // int ret = sensor_trigger_set(trackpad, &trigger, handle_trackpad);
-    // // LOG_ERR(ret);
-
-    // if (ret < 0) {
-    //     LOG_ERR("can't set trigger");
-    //     return -EIO;
-    // };
-    // LOG_WRN("trackpad initialized");
-    return 0;
+    return api->trigger_set(dev, trig, handler);
 }
 
 SYS_INIT(trackpad_init, APPLICATION, CONFIG_ZMK_KSCAN_INIT_PRIORITY);
