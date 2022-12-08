@@ -102,7 +102,7 @@ static int trackpad_init() {
 
 
     const struct sensor_driver_api *api =
-        (const struct sensor_driver_api *)dev->trackpad;
+        (const struct sensor_driver_api *)trackpad->api;
 
 
     int sensorRet;
@@ -112,7 +112,7 @@ static int trackpad_init() {
         sensorRet = -ENOSYS;
     }
 
-    sensorRet = api->trigger_set(dev, trig, handler);
+    sensorRet = api->trigger_set(trackpad, &trigger, handle_trackpad);
 
 
 
