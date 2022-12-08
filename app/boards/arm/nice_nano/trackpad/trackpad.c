@@ -94,7 +94,7 @@ static int trackpad_init() {
     while (1)
     {
       handle_trackpad(trackpad, &trigger);
-      k_sleep(1000);
+      k_usleep(1000);
     }
 
     // k_usleep(2000);
