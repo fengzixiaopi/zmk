@@ -93,7 +93,7 @@ static int trackpad_init() {
 
     k_usleep(2000);
     int ret = sensor_trigger_set(trackpad, &trigger, handle_trackpad);
-    LOG_ERR(ret);
+    // LOG_ERR(ret);
 
     // if (ret < 0) {
     //     LOG_ERR("can't set trigger");
