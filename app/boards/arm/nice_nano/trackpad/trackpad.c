@@ -91,15 +91,21 @@ static int trackpad_init() {
     };
     printk("trackpad");
 
-    k_usleep(2000);
-    int ret = sensor_trigger_set(trackpad, &trigger, handle_trackpad);
-    // LOG_ERR(ret);
+    while (1)
+    {
+      handle_trackpad(trackpad, &trigger);
+      k_sleep(1000);
+    }
 
-    if (ret < 0) {
-        LOG_ERR("can't set trigger");
-        return -EIO;
-    };
-    LOG_WRN("trackpad initialized");
+    // k_usleep(2000);
+    // int ret = sensor_trigger_set(trackpad, &trigger, handle_trackpad);
+    // // LOG_ERR(ret);
+
+    // if (ret < 0) {
+    //     LOG_ERR("can't set trigger");
+    //     return -EIO;
+    // };
+    // LOG_WRN("trackpad initialized");
     return 0;
 }
 
