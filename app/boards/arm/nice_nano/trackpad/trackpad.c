@@ -120,6 +120,7 @@ static int setSensor(const struct device *dev,
         (const struct sensor_driver_api *)dev->api;
 
     if (api->trigger_set == NULL) {
+        LOG_ERR("api trigger set not set");
         return -ENOSYS;
     }
 
