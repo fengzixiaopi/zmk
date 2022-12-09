@@ -60,13 +60,10 @@ struct pinnacle_data {
     const struct sensor_trigger *data_ready_trigger;
     struct gpio_callback gpio_cb;
     sensor_trigger_handler_t data_ready_handler;
-#if defined(CONFIG_PINNACLE_TRIGGER_OWN_THREAD)
     K_THREAD_STACK_MEMBER(thread_stack, CONFIG_PINNACLE_THREAD_STACK_SIZE);
     struct k_sem gpio_sem;
     struct k_thread thread;
-#elif defined(CONFIG_PINNACLE_TRIGGER_GLOBAL_THREAD)
-    struct k_work work;
-#endif
+
 #endif
 };
 

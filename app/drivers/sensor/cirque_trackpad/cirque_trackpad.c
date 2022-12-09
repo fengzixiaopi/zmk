@@ -135,7 +135,6 @@ static void pinnacle_int_cb(const struct device *dev) {
     set_int(dev, true);
 }
 
-#ifdef CONFIG_PINNACLE_TRIGGER_OWN_THREAD
 static void pinnacle_thread(void *arg) {
     const struct device *dev = arg;
     struct pinnacle_data *data = dev->data;
@@ -146,22 +145,14 @@ static void pinnacle_thread(void *arg) {
         pinnacle_write(dev, PINNACLE_STATUS1, 0);   // Clear SW_DR
     }
 }
-#elif defined(CONFIG_PINNACLE_TRIGGER_GLOBAL_THREAD)
-static void pinnacle_work_cb(struct k_work *work) {
-    struct pinnacle_data *data = CONTAINER_OF(work, struct pinnacle_data, work);
-    pinnacle_int_cb(data->dev);
-    pinnacle_write(data->dev, PINNACLE_STATUS1, 0);   // Clear SW_DR
-}
-#endif
+
 
 static void pinnacle_gpio_cb(const struct device *port, struct gpio_callback *cb, uint32_t pins) {
     struct pinnacle_data *data = CONTAINER_OF(cb, struct pinnacle_data, gpio_cb);
     const struct device *dev = data->dev;
-#if defined(CONFIG_PINNACLE_TRIGGER_OWN_THREAD)
+
     k_sem_give(&data->gpio_sem);
-#elif defined(CONFIG_PINNACLE_TRIGGER_GLOBAL_THREAD)
-    k_work_submit(&data->work);
-#endif
+
 }
 #endif
 
@@ -198,15 +189,12 @@ static int pinnacle_init(const struct device *dev) {
         return -EIO;
     }
 
-#if defined(CONFIG_PINNACLE_TRIGGER_OWN_THREAD)
     k_sem_init(&data->gpio_sem, 0, UINT_MAX);
 
     k_thread_create(&data->thread, data->thread_stack, CONFIG_PINNACLE_THREAD_STACK_SIZE,
                     (k_thread_entry_t) pinnacle_thread, (void *) dev, 0, NULL,
                     K_PRIO_COOP(CONFIG_PINNACLE_THREAD_PRIORITY), 0, K_NO_WAIT);
-#elif defined(CONFIG_PINNACLE_TRIGGER_GLOBAL_THREAD)
-    k_work_init(&data->work, pinnacle_work_cb);
-#endif
+
     pinnacle_write(dev, PINNACLE_FEED_CFG1, feed_cfg1);
 #endif
     LOG_WRN("inited");
