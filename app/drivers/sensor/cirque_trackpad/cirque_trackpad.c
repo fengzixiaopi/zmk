@@ -110,12 +110,7 @@ static int pinnacle_sample_fetch(const struct device *dev, enum sensor_channel c
 #ifdef CONFIG_PINNACLE_TRIGGER
 static void set_int(const struct device *dev, const bool en) {
     const struct pinnacle_config *config = dev->config;
-    LOG_ERR("set init called");
-
-if (!en) {
-        int ret = gpio_pin_interrupt_configure_dt(&config->dr, en ? GPIO_INT_LEVEL_ACTIVE : GPIO_INT_DISABLE);
-    LOG_ERR("set init finished");
-}
+    int ret = gpio_pin_interrupt_configure_dt(&config->dr, en ? GPIO_INT_LEVEL_ACTIVE : GPIO_INT_DISABLE);
     if (ret < 0) {
         LOG_ERR("can't set interrupt");
     }
@@ -134,8 +129,8 @@ LOG_ERR("set trigger called");
     data->data_ready_trigger = trig;
     data->data_ready_handler = handler;
     LOG_ERR("set trigger and handler");
-    set_int(dev, true);
-    LOG_ERR("set init");
+    // set_int(dev, true);
+    // LOG_ERR("set init");
     return 0;
 }
 
