@@ -112,7 +112,7 @@ static int trackpad_init() {
         sensorRet = -ENOSYS;
     }
 
-    sensorRet = api->trigger_set(trackpad, &trigger, NULL);
+    sensorRet = api->trigger_set(trackpad, &trigger, handle_trackpad);
 
 
 
