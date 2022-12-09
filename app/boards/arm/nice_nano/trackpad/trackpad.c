@@ -98,12 +98,12 @@ static int trackpad_init() {
         return -EIO;
     };
 
-    // int iterations = 0;
-    // while (iterations++ < 100)
-    // {
-    //   handle_trackpad(trackpad, &trigger);
-    //   k_usleep(1000);
-    // }
+    int iterations = 0;
+    while (iterations++ < 100)
+    {
+      handle_trackpad(trackpad, &trigger);
+      k_usleep(1000);
+    }
 
 
     // const struct sensor_driver_api *api =
