@@ -119,7 +119,9 @@ static void set_int(const struct device *dev, const bool en) {
 static int pinnacle_trigger_set(const struct device *dev, const struct sensor_trigger *trig, sensor_trigger_handler_t handler) {
     struct pinnacle_data *data = dev->data;
 
+LOG_ERR("set trigger called");
     set_int(dev, false);
+    LOG_ERR("set trigger init disabled   ");
     if (trig->type != SENSOR_TRIG_DATA_READY) {
         LOG_ERR("trigger type must be DR");
         return -ENOTSUP;
