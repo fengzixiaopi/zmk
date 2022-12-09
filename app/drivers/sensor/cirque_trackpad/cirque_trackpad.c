@@ -112,12 +112,13 @@ static void set_int(const struct device *dev, const bool en) {
     const struct pinnacle_config *config = dev->config;
     LOG_ERR("set init called");
 
-    int ret = gpio_pin_interrupt_configure_dt(&config->dr, en ? GPIO_INT_LEVEL_ACTIVE : GPIO_INT_DISABLE);
+if (!en) {
+        int ret = gpio_pin_interrupt_configure_dt(&config->dr, en ? GPIO_INT_LEVEL_ACTIVE : GPIO_INT_DISABLE);
     LOG_ERR("set init finished");
+}
     if (ret < 0) {
         LOG_ERR("can't set interrupt");
     }
-
 }
     
 static int pinnacle_trigger_set(const struct device *dev, const struct sensor_trigger *trig, sensor_trigger_handler_t handler) {
