@@ -121,14 +121,11 @@ static int pinnacle_trigger_set(const struct device *dev, const struct sensor_tr
 
     set_int(dev, false);
     if (trig->type != SENSOR_TRIG_DATA_READY) {
-        LOG_ERR("trigger type must be DR");
         return -ENOTSUP;
     }
     data->data_ready_trigger = trig;
     data->data_ready_handler = handler;
-    LOG_ERR("set trigger and handler");
-    // set_int(dev, true);
-    // LOG_ERR("set init");
+    set_int(dev, true);
     return 0;
 }
 
