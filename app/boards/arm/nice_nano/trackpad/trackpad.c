@@ -93,26 +93,26 @@ static int trackpad_init() {
     };
     printk("trackpad");
 
-    // int iterations = 0;
-    // while (iterations++ < 100)
-    // {
-    //   handle_trackpad(trackpad, &trigger);
-    //   k_usleep(1000);
-    // }
-
-
-    const struct sensor_driver_api *api =
-        (const struct sensor_driver_api *)trackpad->api;
-
-
-    int sensorRet;
-
-    if (api->trigger_set == NULL) {
-        LOG_ERR("api trigger set not set");
-        sensorRet = -ENOSYS;
+    int iterations = 0;
+    while (iterations++ < 100)
+    {
+      handle_trackpad(trackpad, &trigger);
+      k_usleep(1000);
     }
 
-    sensorRet = api->trigger_set(trackpad, &trigger, handle_trackpad);
+
+    // const struct sensor_driver_api *api =
+    //     (const struct sensor_driver_api *)trackpad->api;
+
+
+    // int sensorRet;
+
+    // if (api->trigger_set == NULL) {
+    //     LOG_ERR("api trigger set not set");
+    //     sensorRet = -ENOSYS;
+    // }
+
+    // sensorRet = api->trigger_set(trackpad, &trigger, handle_trackpad);
 
 
 
@@ -121,10 +121,10 @@ static int trackpad_init() {
     // int ret = setSensor(trackpad, &trigger, handle_trackpad);
     // LOG_ERR(ret);
 
-    if (sensorRet < 0) {
-        LOG_ERR("can't set trigger");
-        return -EIO;
-    };
+    // if (sensorRet < 0) {
+    //     LOG_ERR("can't set trigger");
+    //     return -EIO;
+    // };
     LOG_WRN("trackpad initialized");
     return 0;
 }
