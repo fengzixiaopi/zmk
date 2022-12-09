@@ -120,9 +120,9 @@ static int pinnacle_trigger_set(const struct device *dev, const struct sensor_tr
     struct pinnacle_data *data = dev->data;
 
     set_int(dev, false);
-    // if (trig->type != SENSOR_TRIG_DATA_READY) {
-    //     return -ENOTSUP;
-    // }
+    if (trig->type != SENSOR_TRIG_DATA_READY) {
+        return -ENOTSUP;
+    }
     data->data_ready_trigger = trig;
     data->data_ready_handler = handler;
     set_int(dev, true);
