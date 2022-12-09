@@ -93,17 +93,17 @@ static int trackpad_init() {
     };
     printk("trackpad");
 
-    if (sensor_trigger_set(trackpad, &trigger, handle_trackpad) < 0) {
-        LOG_ERR("can't set trigger");
-        return -EIO;
-    };
+    // if (sensor_trigger_set(trackpad, &trigger, handle_trackpad) < 0) {
+    //     LOG_ERR("can't set trigger");
+    //     return -EIO;
+    // };
 
-    // int iterations = 0;
-    // while (iterations++ < 100)
-    // {
-    //   handle_trackpad(trackpad, &trigger);
-    //   k_usleep(1000);
-    // }
+    int iterations = 0;
+    while (iterations++ < 100)
+    {
+      handle_trackpad(trackpad, &trigger);
+      k_usleep(1000);
+    }
 
 
     // const struct sensor_driver_api *api =
