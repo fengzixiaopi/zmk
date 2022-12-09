@@ -58,7 +58,7 @@ struct pinnacle_data {
 #ifdef CONFIG_PINNACLE_TRIGGER
     const struct device *dev;
     const struct sensor_trigger *data_ready_trigger;
-	struct gpio_callback gpio_cb;
+    struct gpio_callback gpio_cb;
     sensor_trigger_handler_t data_ready_handler;
 #if defined(CONFIG_PINNACLE_TRIGGER_OWN_THREAD)
     K_THREAD_STACK_MEMBER(thread_stack, CONFIG_PINNACLE_THREAD_STACK_SIZE);
@@ -72,9 +72,9 @@ struct pinnacle_data {
 
 struct pinnacle_config {
 #if DT_INST_ON_BUS(0, i2c)
-	const struct i2c_dt_spec bus;
+    const struct i2c_dt_spec bus;
 #elif DT_INST_ON_BUS(0, spi)
-	const struct spi_dt_spec bus;
+    const struct spi_dt_spec bus;
 #endif
     bool invert_x, invert_y, sleep_en, no_taps;
 #ifdef CONFIG_PINNACLE_TRIGGER
