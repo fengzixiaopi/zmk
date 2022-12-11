@@ -144,9 +144,13 @@ static void pinnacle_thread(void *arg) {
     LOG_ERR("pinnacle_thread finished");
 
     while (1) {
+        LOG_ERR("k_sem_take started");
         k_sem_take(&data->gpio_sem, K_FOREVER);
+        LOG_ERR("k_sem_take finished");
         pinnacle_int_cb(dev);
+        LOG_ERR("pinnacle_int_cb dev finished");
         pinnacle_write(dev, PINNACLE_STATUS1, 0);   // Clear SW_DR
+        LOG_ERR("pinnacle_write finished");
     }
 }
 
