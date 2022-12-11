@@ -133,12 +133,15 @@ static int pinnacle_trigger_set(const struct device *dev, const struct sensor_tr
 static void pinnacle_int_cb(const struct device *dev) {
     struct pinnacle_data *data = dev->data;
     data->data_ready_handler(dev, data->data_ready_trigger);
+    LOG_ERR("pinnacle_int_cb finished");
     set_int(dev, true);
 }
 
 static void pinnacle_thread(void *arg) {
     const struct device *dev = arg;
     struct pinnacle_data *data = dev->data;
+
+    LOG_ERR("pinnacle_thread finished");
 
     while (1) {
         k_sem_take(&data->gpio_sem, K_FOREVER);
