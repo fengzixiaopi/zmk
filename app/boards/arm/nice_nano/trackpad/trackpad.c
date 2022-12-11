@@ -88,7 +88,7 @@ static int trackpad_init() {
 //     return 0;
 
     struct sensor_trigger trigger = {
-        .type = SENSOR_TRIG_MOTION,
+        .type = SENSOR_TRIG_TIMER,
         .chan = SENSOR_CHAN_ALL,
     };
     printk("trackpad");
