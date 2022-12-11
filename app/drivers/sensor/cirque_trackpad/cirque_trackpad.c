@@ -48,6 +48,7 @@ static int pinnacle_write(const struct device *dev, const uint8_t addr, const ui
     const struct pinnacle_config *config = dev->config;
 #if DT_INST_ON_BUS(0, spi)
     uint8_t tx_buffer[2] = { PINNACLE_WRITE | addr, val };
+    uint8_t rx_buffer[2];
 
     const struct spi_buf tx_buf = {
         .buf = tx_buffer,
