@@ -180,7 +180,7 @@ static int pinnacle_init(const struct device *dev) {
         pinnacle_write(dev, PINNACLE_FEED_CFG1, feed_cfg1);
     }
 
-#ifdef CONFIG_PINNACLE_TRIGGER
+
     LOG_ERR("trigger called");
     data->dev = dev;
     gpio_pin_configure_dt(&config->dr, GPIO_INPUT);
@@ -198,7 +198,6 @@ static int pinnacle_init(const struct device *dev) {
                     K_PRIO_COOP(CONFIG_PINNACLE_THREAD_PRIORITY), 0, K_NO_WAIT);
 
     pinnacle_write(dev, PINNACLE_FEED_CFG1, feed_cfg1);
-#endif
     LOG_WRN("inited");
     return 0;
 }
