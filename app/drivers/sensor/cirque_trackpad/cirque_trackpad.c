@@ -120,12 +120,13 @@ static int pinnacle_trigger_set(const struct device *dev, const struct sensor_tr
     struct pinnacle_data *data = dev->data;
 
     set_int(dev, false);
-    // if (trig->type != SENSOR_TRIG_DATA_READY) {
-    //     return -ENOTSUP;
-    // }
+    if (trig->type != SENSOR_TRIG_DATA_READY) {
+        return -ENOTSUP;
+    }
     data->data_ready_trigger = trig;
     data->data_ready_handler = handler;
     set_int(dev, true);
+    LOG_ERR("pinnacle_trigger_set finished");
     return 0;
 }
 
@@ -180,6 +181,7 @@ static int pinnacle_init(const struct device *dev) {
     }
 
 #ifdef CONFIG_PINNACLE_TRIGGER
+    LOG_ERR("trigger called");
     data->dev = dev;
     gpio_pin_configure_dt(&config->dr, GPIO_INPUT);
     gpio_init_callback(&data->gpio_cb, pinnacle_gpio_cb, BIT(config->dr.pin));
