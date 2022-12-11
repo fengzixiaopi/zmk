@@ -145,7 +145,7 @@ static void pinnacle_thread(void *arg) {
 
     while (1) {
         LOG_ERR("k_sem_take started");
-        k_sem_take(&data->gpio_sem, K_FOREVER);
+        // k_sem_take(&data->gpio_sem, K_FOREVER);
         LOG_ERR("k_sem_take finished");
         pinnacle_int_cb(dev);
         LOG_ERR("pinnacle_int_cb dev finished");
