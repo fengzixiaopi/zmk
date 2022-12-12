@@ -78,3 +78,9 @@ struct pinnacle_config {
     uint8_t dr_pin, dr_flags;
 #endif
 };
+
+
+enum {
+    // Cirque Pinnacle Glide Extend
+    SENSOR_ATTR_PINNACLE_GE = SENSOR_ATTR_PRIV_START,
+};
