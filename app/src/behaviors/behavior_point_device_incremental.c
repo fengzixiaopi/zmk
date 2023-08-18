@@ -74,6 +74,7 @@ static int on_pd_binding_triggered(struct zmk_behavior_binding *binding,
     x = x / cfg->scale_factor;
     y = y / cfg->scale_factor;
     break;
+    
   default:
     LOG_ERR("unsupported scale mode %d", cfg->scale_mode);
 		return -ENOTSUP;
