@@ -16,6 +16,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/mouse.h>
 #include <zmk/hid.h>
 #include <zmk/endpoints.h>
+#include <sys/atomic.h>
 
 typedef struct {
   int16_t x;
@@ -48,9 +49,24 @@ static void pd_process_msgq(struct k_work *work) {
 
 K_WORK_DEFINE(pd_msg_processor, pd_process_msgq);
 
+ATOMIC_DEFINE(timer_set_bit, 1);
+
+void deactivate_mouse_layer(struct k_timer *timer) {
+    zmk_keymap_layer_deactivate(CONFIG_MOUSE_LAYER_INDEX);
+    atomic_clear_bit(timer_set_bit, 1);
+}
+
+K_TIMER_DEFINE(mouse_layer_timer, deactivate_mouse_layer, NULL);
+
 int pd_listener(const zmk_event_t *eh) {
+
     const struct zmk_pd_position_state_changed *mv_ev = as_zmk_pd_position_state_changed(eh);
     if (mv_ev) {
+      if (!atomic_test_and_set_bit(timer_set_bit, 1)) {
+        // k_timer_stop(&mouse_layer_timer);
+        zmk_keymap_layer_activate(CONFIG_MOUSE_LAYER_INDEX);
+        k_timer_start(&mouse_layer_timer, K_MSEC(CONFIG_MOUSE_LAYER_ACTIVE_MS), K_NO_WAIT);
+      }
       zmk_pd_msg msg = {.x = mv_ev->x, .y = mv_ev->y, .scroll = false};
       k_msgq_put(&zmk_pd_msgq, &msg, K_NO_WAIT);
       k_work_submit_to_queue(zmk_mouse_work_q(), &pd_msg_processor);
@@ -59,6 +75,11 @@ int pd_listener(const zmk_event_t *eh) {
 
     const struct zmk_pd_scroll_state_changed *sc_ev = as_zmk_pd_scroll_state_changed(eh);
     if (sc_ev) {
+      if (!atomic_test_and_set_bit(timer_set_bit, 1)) {
+        // k_timer_stop(&mouse_layer_timer);
+        zmk_keymap_layer_activate(CONFIG_SCROLL_LAYER_INDEX);
+        k_timer_start(&mouse_layer_timer, K_MSEC(CONFIG_MOUSE_LAYER_ACTIVE_MS), K_NO_WAIT);
+      }
       zmk_pd_msg msg = {.x = sc_ev->x, .y = sc_ev->y, .scroll = true};
       k_msgq_put(&zmk_pd_msgq, &msg, K_NO_WAIT);
       k_work_submit_to_queue(zmk_mouse_work_q(), &pd_msg_processor);
