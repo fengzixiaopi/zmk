@@ -24,12 +24,6 @@ typedef struct {
   bool    scroll;
 }__attribute__((aligned(4))) zmk_pd_msg;
 
-void deactivate_mouse_layer(struct k_timer *timer) {
-    zmk_keymap_layer_deactivate(CONFIG_MOUSE_LAYER_INDEX);
-}
-
-K_TIMER_DEFINE(mouse_layer_timer, deactivate_mouse_layer, NULL);
-
 K_MSGQ_DEFINE(zmk_pd_msgq, sizeof(zmk_pd_msg), CONFIG_ZMK_KSCAN_EVENT_QUEUE_SIZE, 4);
 
 static void pd_process_msgq(struct k_work *work) {
@@ -57,12 +51,6 @@ K_WORK_DEFINE(pd_msg_processor, pd_process_msgq);
 
 
 int pd_listener(const zmk_event_t *eh) {
-    if (zmk_keymap_highest_layer_active() == zmk_keymap_layer_default() || zmk_keymap_highest_layer_active() == CONFIG_MOUSE_LAYER_ACTIVE_MS) { // only trigger auto mouse layer from base layer
-      k_timer_stop(&mouse_layer_timer);
-      zmk_keymap_layer_activate(CONFIG_MOUSE_LAYER_INDEX);
-      k_timer_start(&mouse_layer_timer, K_MSEC(CONFIG_MOUSE_LAYER_ACTIVE_MS), K_NO_WAIT);
-    }
-
     const struct zmk_pd_position_state_changed *mv_ev = as_zmk_pd_position_state_changed(eh);
     if (mv_ev) {
       zmk_pd_msg msg = {.x = mv_ev->x, .y = mv_ev->y, .scroll = false};
